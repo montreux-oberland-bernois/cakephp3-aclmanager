@@ -1,0 +1,27 @@
+{
+    "name": "montreux-oberland-bernois/cakephp3-aclmanager",
+    "description": "Acl Manager for CakePHP 3.x",
+    "keywords": ["cakephp", "cakephp3", "cake3", "plugin", "acl", "manager"],
+    "homepage": "https://github.com/montreux-oberland-bernois/cakephp3-aclmanager",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MOB",
+            "homepage": "https://www.mob.ch",
+            "role": "Author"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.16",
+        "composer/installers": "*",
+        "cakephp/cakephp": "~3.0",
+        "cakephp/plugin-installer": "~0.0",
+        "cakephp/acl": "~0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "AclManager\\": "src"
+        }
+    }
+}
