@@ -13,11 +13,11 @@
         }
     ],
     "require": {
-        "php": ">=5.4.16",
+        "php": ">=5.5.9",
         "composer/installers": "*",
-        "cakephp/cakephp": "~3.0",
-        "cakephp/plugin-installer": "~0.0",
-        "cakephp/acl": "~0.2"
+        "cakephp/cakephp": "3.3.*",
+        "cakephp/plugin-installer": "*",
+        "cakephp/acl": "dev-master"
     },
     "autoload": {
         "psr-4": {
