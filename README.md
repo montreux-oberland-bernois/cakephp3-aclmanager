@@ -37,6 +37,10 @@ For specified user or group managing, you can pass one or multiple id in params 
 
 This plugin is adapted for [AdminLTE Template](https://almsaeedstudio.com/themes/AdminLTE).
 
+## Todo
+
+* Ajax Update children when change permissions 
+
 ## About CakePHP 3.x AclManager
 
 CakePHP 3.x - Acl Manager was inspired by the plugin of [Jean-Christophe Pires (JcPires)](https://github.com/JcPires/CakePhp3-AclManager) and [Iván Amat](https://github.com/ivanamat/cakephp3-aclmanager).
