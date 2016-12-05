@@ -1,0 +1,21 @@
+
+.subtitle {
+    font-size: 24px;
+}
+
+.select-perm * {
+    display: inline-block;
+}
+
+.select-perm select {
+    width: calc(100% - 38px);
+}
+
+.select-perm img{
+    width: 16px;
+}
+.click{
+    cursor: pointer;
+}
+
+
