@@ -1,4 +1,4 @@
-# CakePHP 3.x Acl Manager
+# CakePHP 3.x Acl Manager [![Latest Stable Version](https://poser.pugx.org/montreux-oberland-bernois/cakephp3-aclmanager/v/stable?style=flat)](https://packagist.org/packages/montreux-oberland-bernois/cakephp3-aclmanager) [![Total Downloads](https://poser.pugx.org/montreux-oberland-bernois/cakephp3-aclmanager/downloads?style=flat)](https://packagist.org/packages/montreux-oberland-bernois/cakephp3-aclmanager) [![License](https://poser.pugx.org/montreux-oberland-bernois/cakephp3-aclmanager/license?style=flat)](https://packagist.org/packages/montreux-oberland-bernois/cakephp3-aclmanager)
 Acl Manager For CakePHP 3.x 
 
 ## Installation
