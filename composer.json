@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.5.9",
         "composer/installers": "*",
-        "cakephp/cakephp": "3.3.*",
+        "cakephp/cakephp": "*",
         "cakephp/plugin-installer": "*",
         "cakephp/acl": "dev-master"
     },
