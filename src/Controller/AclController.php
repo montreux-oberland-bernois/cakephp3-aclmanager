@@ -12,6 +12,7 @@ use AclManager\Controller\AppController;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\TableRegistry;
 
 class AclController extends AppController {
 
@@ -112,6 +113,8 @@ class AclController extends AppController {
          */
         $acosRes = $this->Acl->Aco->find('all', ['order' => 'lft ASC'])->contain(['Aros'])->toArray();
         $this->acos = $acos = $this->_parseAcos($acosRes);
+
+        //$acostree = $this->_generateList();
 
         $perms = array();
         $parents = array();
@@ -450,6 +453,73 @@ class AclController extends AppController {
     }
 
     /**
+     * _generateList
+     * @return null
+     */
+    private function _generateList(){
+        $tblAcos = TableRegistry::get('Acl.Acos');
+        $acos = $tblAcos->find('treeList', ['keyPath' => 'id', 'valuePath' => 'id'])->toArray();
+        /*
+        $index=null;$result=null;
+
+        foreach ($acos as $key => $aco) {
+
+            if (substr($aco, 0, 1) === '_'){
+                $depth = 0;
+                while(substr($aco, 0, 1) === '_'){
+                    $depth += 1;
+                    $aco = substr($aco, 1, 0);
+                }
+
+                for ($i = 1; $i <= $depth; $i++) {
+
+                }
+
+
+            }else{
+                $index = strtoupper($aco);
+            }
+        }
+        return $result;
+        */
+
+        $result = array();
+        $path = array();
+        $indentation = '_';
+
+        foreach ($acos as $key => $line) {
+            // get depth and label
+            $depth = 0;
+            while (substr($line, 0, strlen($indentation)) === $indentation) {
+                $depth += 1;
+                $line = substr($line, strlen($indentation));
+            }
+
+            // truncate path if needed
+            while ($depth < sizeof($path)) {
+                array_pop($path);
+            }
+
+            // keep label (at depth)
+            $path[$depth] = $line;
+
+            // traverse path and add label to result
+            $parent =& $result;
+            foreach ($path as $depth => $key) {
+                if (!isset($parent[$key])) {
+                    $parent[$line] = array();
+                    break;
+                }
+
+                $parent =& $parent[$key];
+            }
+        }
+
+        // return
+        return $result;
+    }
+
+    /**
      * Returns an array with acos
      * @param Acos $acos Parse Acos entities and store into array formated
      * @return array 
@@ -493,7 +563,7 @@ class AclController extends AppController {
 
             $data['Aro'] = $d;
 
-            array_push($cache, $data);
+            $cache[$aco->id] = $data;
         }
 
         return $cache;

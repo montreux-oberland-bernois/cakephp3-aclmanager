@@ -15,6 +15,7 @@ $this->assign('description', 'Gérer les autorisations');
 
 echo $this->Html->css('AclManager.default',['inline' => false]);
 echo $this->Html->script('AclManager.acl/manage.js', array('block' => 'script'));
+echo $this->Html->script('Accounting.drilldown-table.js', ['block' =>'script']);
 
 $btn_ico = [
         'allow' => '<i class="fa fa-check text-success"></i>',
@@ -36,7 +37,7 @@ $btn_ico = [
                     <thead>
                     <tr>
                         <th>Action</th>
-                        <?php foreach ($aros as $aro): ?>
+                        <?php foreach ($aros as $aro){ ?>
                             <?php $aro = array_shift($aro); ?>
                             <th>
                                 <?php
@@ -48,10 +49,13 @@ $btn_ico = [
                                 }
                                 ?>
                             </th>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </tr>
                     </thead>
+
                     <tbody>
+
+
                     <?php
                     $uglyIdent = Configure::read('AclManager.uglyIdent');
                     $lastIdent = null;
@@ -59,6 +63,8 @@ $btn_ico = [
                         $action = $aco['Action'];
                         $alias = $aco['Aco']['alias'];
                         $ident = substr_count($action, '/');
+                        $nextAction = next($acos)['Action'];
+                        $nextIdent = substr_count($nextAction, '/');;
                         if ($ident <= $lastIdent && !is_null($lastIdent)) {
                             for ($i = 0; $i <= ($lastIdent - $ident); $i++) {
                                 echo "</tr>";
@@ -71,7 +77,7 @@ $btn_ico = [
                         }
 
                             echo "<td>";
-                            echo ($ident == 1 || $ident > $lastIdent ? "<i data-trigger='expand'  data-id='".$aco['Aco']['id']."' class='fa fa-plus-square click'></i> <strong>" : "" ) . ($uglyIdent ? str_repeat("&nbsp;&nbsp;", $ident) : "") . h($alias) . ($ident == 1 ? "</strong>" : "" );
+                            echo ($uglyIdent ? str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", $ident) : "") . ($ident == 1 || $nextIdent > $ident ? "<i data-trigger='expand'  data-id='".$aco['Aco']['id']."' class='fa fa-plus-square click'></i> <strong>" : "" ) . h($alias) . ($ident == 1 ? "</strong>" : "" );
                             echo "</td>";
                             foreach ($aros as $aro):
                                 $inherit = $this->AclManager->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}-inherit");
