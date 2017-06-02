@@ -60,12 +60,12 @@ class AclManagerHelper extends Helper {
      *
      * @return bool
      */
-    public function check($aro, $aco) {
+    public function check($aro, $aco, $action = '*') {
         if (empty($aro) || empty($aco)) {
             return false;
         }
         
-        return $this->Acl->check($aro, $aco);
+        return $this->Acl->check($aro, $aco, $action);
     }
 
     public function getName($aro, $id) {
