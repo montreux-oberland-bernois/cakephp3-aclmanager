@@ -80,11 +80,11 @@ class AclManagerHelper extends Helper {
      * @return bool
      */
     public function checkUser($aco, $uid = null, $action = '*') {
+        $uid = $this->request->session()->read('Auth.User.id');
+
         if(empty($uid)) {
             return false;
         }
-        
-        $uid = $this->request->session()->read('Auth.User.id');
 
         return $this->_check(['model' => 'Users', 'foreign_key' => $uid], $aco, $action);
     }
