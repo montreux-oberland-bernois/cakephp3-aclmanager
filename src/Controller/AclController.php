@@ -22,9 +22,6 @@ class AclController extends AppController {
      * @var array
      */
     public $components = [
-        'Acl' => [
-            'className' => 'Acl.Acl'
-        ],
         'AclManager' => [
             'className' => 'AclManager.AclManager'
         ]
@@ -43,7 +40,11 @@ class AclController extends AppController {
      */
     public function initialize(){
         parent::initialize();
-        
+
+        if (!in_array('Acl', $this->components()->loaded())) {
+            $this->loadComponent('Acl.Acl');
+        }
+
         /**
          * Initialize ACLs
          */
