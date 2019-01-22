@@ -17,7 +17,7 @@
         "composer/installers": "*",
         "cakephp/cakephp": "*",
         "cakephp/plugin-installer": "*",
-        "cakephp/acl": "dev-master"
+        "cakephp/acl": "^0.4.0"
     },
     "autoload": {
         "psr-4": {
