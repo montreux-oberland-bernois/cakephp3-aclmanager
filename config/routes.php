@@ -20,12 +20,6 @@
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 
-Router::connect(
-    '/AclManager',
-    ['plugin' => 'AclManager', 'controller' => 'Acl', 'action' => 'index'],
-    ['_name' => 'AclManager']
-);
-
 Router::plugin(
     'AclManager',
     ['path' => '/AclManager'],
