@@ -34,7 +34,13 @@ class AclController extends AppController {
      */
     public $model = NULL;
     
-    
+    /**
+     * Lookup
+     *
+     * @var 
+     */
+    public $lookup  = 0;
+	
     /**
      * Initialize
      */
