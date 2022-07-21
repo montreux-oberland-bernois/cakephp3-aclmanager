@@ -16,17 +16,6 @@ use Cake\ORM\TableRegistry;
 class AclController extends AppController
 {
     /**
-     * Components
-     *
-     * @var array
-     */
-    public $components = [
-        'AclManager' => [
-            'className' => 'AclManager.AclManager'
-        ]
-    ];
-
-    /**
      * Model
      *
      * @var NULL
@@ -51,6 +40,8 @@ class AclController extends AppController
             $this->loadComponent('Acl.Acl');
         }
 
+        $this->loadComponent('AclManager.AclManager');
+
         /**
          * Initialize ACLs
          */
@@ -74,7 +65,7 @@ class AclController extends AppController
         foreach ($aros as $aro) {
             $l = Configure::read("AclManager.{$aro}.limit");
             $limit = empty($l) ? 4 : $l;
-            $this->paginate[$this->{$aro}->alias()] = [
+            $this->paginate[$this->{$aro}->getAlias()] = [
                 'recursive' => -1,
                 'limit' => $limit
             ];
@@ -94,8 +85,8 @@ class AclController extends AppController
     public function permissions($model = 'Groups')
     {
         $this->model = $model;
-        $aroAlias = $this->{$model}->alias();
-        $aroDisplayField = $this->{$model}->displayField();
+        $aroAlias = $this->{$model}->getAlias();
+        $aroDisplayField = $this->{$model}->getDisplayField();
 
         if (!$model || !in_array($model, Configure::read('AclManager.aros'))) {
             $m = Configure::read('AclManager.aros');
@@ -178,7 +169,7 @@ class AclController extends AppController
         }
         $this->set(['result' => true, '_serialize' => ['result']]);
         $this->RequestHandler->renderAs($this, 'json');
-        $this->response->type('application/json');
+        $this->setResponse($this->getResponse()->withType('application/json'));
     }
 
     /**
@@ -430,7 +421,7 @@ class AclController extends AppController
      */
     protected function _getKeys()
     {
-        $keys = $this->Permissions->schema()->columns();
+        $keys = $this->Permissions->getSchema()->columns();
         $newKeys = [];
         foreach ($keys as $key) {
             if (!in_array($key, ['id', 'aro_id', 'aco_id'])) {
@@ -471,7 +462,7 @@ class AclController extends AppController
      */
     private function _generateList()
     {
-        $tblAcos = TableRegistry::get('Acl.Acos');
+        $tblAcos = TableRegistry::getTableLocator()->get('Acl.Acos');
         $acos = $tblAcos->find('treeList', ['keyPath' => 'id', 'valuePath' => 'id'])->toArray();
         /*
         $index=null;$result=null;

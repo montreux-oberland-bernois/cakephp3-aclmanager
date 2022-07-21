@@ -32,7 +32,7 @@ $btn_ico = [
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <?php echo $this->Form->create('Perms'); ?>
+                <?php echo $this->Form->create(); ?>
                 <table class="table table-hovered">
                     <thead>
                     <tr>
@@ -63,9 +63,12 @@ $btn_ico = [
                         $action = $aco['Action'];
                         $alias = $aco['Aco']['alias'];
                         $ident = substr_count($action, '/');
-                        $nextAction = next($acos)['Action'];
+                        $nextAction = next($acos);
+                        if (is_bool($nextAction)) {
+                            continue;
+                        }
+                        $nextAction = $nextAction['Action'];
                         $nextIdent = substr_count($nextAction, '/');
-                        ;
                         if ($ident <= $lastIdent && !is_null($lastIdent)) {
                             for ($i = 0; $i <= ($lastIdent - $ident); $i++) {
                                 echo "</tr>";
