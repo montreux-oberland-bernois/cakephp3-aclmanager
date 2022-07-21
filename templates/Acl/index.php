@@ -7,7 +7,7 @@
 $this->assign('icon', 'lock');
 $this->assign('title', 'Gestion des droits');
 $this->assign('description', 'version 0.1');
-echo $this->Html->css('AclManager.default',['inline' => false]);
+echo $this->Html->css('AclManager.default', ['inline' => false]);
 ?>
 <h2>Gestion</h2>
 <div class="row">

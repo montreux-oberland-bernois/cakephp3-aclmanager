@@ -19,8 +19,8 @@ use Cake\ORM\TableRegistry;
 use ReflectionClass;
 use ReflectionMethod;
 
-class AclManagerComponent extends Component {
-
+class AclManagerComponent extends Component
+{
     /**
      * Base for acos
      *
@@ -42,13 +42,13 @@ class AclManagerComponent extends Component {
      *
      * @return null
      */
-    public function initialize(array $config) {
+    public function initialize(array $config): void
+    {
         $registry = new ComponentRegistry();
         $this->Acl = new AclComponent($registry, Configure::read('Acl'));
         $this->Aco = $this->Acl->Aco;
         $this->Aro = $this->Acl->Aro;
         $this->config = $config;
-        return null;
     }
 
     /**
@@ -59,7 +59,8 @@ class AclManagerComponent extends Component {
      *
      * @return bool return true if acos saved
      */
-    public function acosBuilder() {
+    public function acosBuilder()
+    {
         $srcControllers = $this->__getResources();
         $pluginsControllers = $this->__getPluginsResources();
         //$this->checkNodeOrSave("", "", null);
@@ -67,47 +68,53 @@ class AclManagerComponent extends Component {
         $this->__setPluginsAcos($pluginsControllers);
     }
 
-    public function arosBuilder() {
-        $this->Groups = TableRegistry::get('Groups');
-        $this->Users = TableRegistry::get('Users');
+    /**
+     * Build ARO list
+     * @return int
+     */
+    public function arosBuilder()
+    {
+        $this->Groups = TableRegistry::getTableLocator()->get('Groups');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
 
-        $newAros = array();
+        $newAros = [];
         $counter = 0;
 
         // Build the groups.
-	$groups = $this->Groups->find('all')->toArray();
-	foreach($groups as $group) {
+        $groups = $this->Groups->find('all')->toArray();
+        foreach ($groups as $group) {
             $aro = new Aro([
-                'alias'=>$group->name,
+                'alias' => $group->name,
                 'foreign_key' => $group->id,
-                'model'=>'Groups',
+                'model' => 'Groups',
                 'parent_id' => null
             ]);
 
-            if($this->__findAro($aro) == 0 && $this->Acl->Aro->save($aro)) {
+            if ($this->__findAro($aro) == 0 && $this->Acl->Aro->save($aro)) {
                 $counter++;
             }
-	}
+        }
 
-
-	// Build the users.
-	$users = $this->Users->find('all');
-	foreach($users as $user) {
-            $parent = $this->Aro->find('all',
-                    ['conditions' => [
+    // Build the users.
+        $users = $this->Users->find('all');
+        foreach ($users as $user) {
+            $parent = $this->Aro->find(
+                'all',
+                ['conditions' => [
                         'model' => 'Groups',
                         'foreign_key' => $user->role_id
-                    ]])->first();
-            $aro = new Aro([
-                'alias'=>$user->email,
+                ]]
+            )->first();
+                $aro = new Aro([
+                'alias' => $user->email,
                 'foreign_key' => $user->id,
-                'model'=>'Users',
+                'model' => 'Users',
                 'parent_id' => $parent->id
-            ]);
-            if($this->__findAro($aro) == 0 && $this->Acl->Aro->save($aro)) {
+                ]);
+            if ($this->__findAro($aro) == 0 && $this->Acl->Aro->save($aro)) {
                 $counter++;
             }
-	}
+        }
 
         return $counter;
     }
@@ -116,9 +123,11 @@ class AclManagerComponent extends Component {
      * Gets the data for the current tag
      *
      */
-    public function value($options = array()) {
-        $o = explode('.',$options);
+    public function value($options = [])
+    {
+        $o = explode('.', $options);
         $data = $this->request->data;
+
         return $data[$o[0]][$o[1]][$o[2]];
     }
 
@@ -127,13 +136,15 @@ class AclManagerComponent extends Component {
      *
      * @return array like Controller => actions
      */
-    private function __getResources() {
+    private function __getResources()
+    {
         $controllers = $this->__getControllers();
         $resources = [];
         foreach ($controllers as $controller) {
             $actions = $this->__getActions($controller);
             array_push($resources, $actions);
         }
+
         return $resources;
     }
 
@@ -141,21 +152,23 @@ class AclManagerComponent extends Component {
      * Get all controllers with actions in Plugins
      *
      */
-    private function __getPluginsResources(){
+    private function __getPluginsResources()
+    {
         $controllers = $this->__getPluginsControllers();
         $resources = [];
-        foreach($controllers as $key => $plugin){
-            foreach($plugin as $plugin => $controllers){
+        foreach ($controllers as $key => $plugin) {
+            foreach ($plugin as $plugin => $controllers) {
                 $resourcesPlugin = [$plugin => []];
                 foreach ($controllers as $controller) {
-                    $actions = $this->__getPluginActions($plugin,$controller);
-                    foreach($actions as $action) {
-                        $resourcesPlugin[$plugin.'/'.$controller][] = $action;
+                    $actions = $this->__getPluginActions($plugin, $controller);
+                    foreach ($actions as $action) {
+                        $resourcesPlugin[$plugin . '/' . $controller][] = $action;
                     }
                 }
                 array_push($resources, $resourcesPlugin);
             }
         }
+
         return $resources;
     }
 
@@ -164,7 +177,8 @@ class AclManagerComponent extends Component {
      *
      * @return array return a list of all controllers
      */
-    private function __getControllers() {
+    private function __getControllers()
+    {
         $path = App::path('Controller');
         $dir = new Folder($path[0]);
         $files = $dir->findRecursive('.*Controller\.php');
@@ -175,6 +189,7 @@ class AclManagerComponent extends Component {
             $controller = str_replace('Controller', '', $controller);
             array_push($results, $controller);
         }
+
         return $results;
     }
 
@@ -185,7 +200,8 @@ class AclManagerComponent extends Component {
      *
      * @return array
      */
-    private function __getActions($controllerName) {
+    private function __getActions($controllerName)
+    {
         $className = 'App\\Controller\\' . $controllerName . 'Controller';
         $class = new ReflectionClass($className);
         $actions = $class->getMethods(ReflectionMethod::IS_PUBLIC);
@@ -193,11 +209,13 @@ class AclManagerComponent extends Component {
         $results = [$controllerName => []];
         $ignoreList = ['beforeFilter', 'afterFilter', 'initialize', 'beforeRender'];
         foreach ($actions as $action) {
-            if ($action->class == $className && !in_array($action->name, $ignoreList)
+            if (
+                $action->class == $className && !in_array($action->name, $ignoreList)
             ) {
                 array_push($results[$controllerName], $action->name);
             }
         }
+
         return $results;
     }
 
@@ -205,7 +223,8 @@ class AclManagerComponent extends Component {
      * Get all controllers from active Plugins
      *
      */
-    private function __getPluginsControllers() {
+    private function __getPluginsControllers()
+    {
         $results = [];
         $ignoreList = [
             '.',
@@ -215,20 +234,20 @@ class AclManagerComponent extends Component {
         ];
         $plugins = Plugin::loaded();
 
-        foreach($plugins as $plugin) {
+        foreach ($plugins as $plugin) {
             $result = [$plugin => []];
             $path = Plugin::path($plugin);
-            $path = $path.'src/Controller/';
-            if(is_dir($path)){
+            $path = $path . 'src/Controller/';
+            if (is_dir($path)) {
                 $files = scandir($path);
-                foreach($files as $file){
-                    if(!in_array($file, $ignoreList)) {
+                foreach ($files as $file) {
+                    if (!in_array($file, $ignoreList)) {
                         $controller = explode('.', $file)[0];
                         $controllerName = str_replace('Controller', '', $controller);
                         array_push($result[$plugin], $controllerName);
                     }
                 }
-                if(!empty($result[$plugin])) {
+                if (!empty($result[$plugin])) {
                     array_push($results, $result);
                 }
             }
@@ -241,8 +260,9 @@ class AclManagerComponent extends Component {
      * Get all actions in plugin controllers
      *
      */
-    private function __getPluginActions($plugin,$controllerName) {
-        $className = $plugin.'\\Controller\\' . $controllerName . 'Controller';
+    private function __getPluginActions($plugin, $controllerName)
+    {
+        $className = $plugin . '\\Controller\\' . $controllerName . 'Controller';
         $class = new ReflectionClass($className);
         $actions = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         $results = [$controllerName => []];
@@ -252,6 +272,7 @@ class AclManagerComponent extends Component {
                 array_push($results[$controllerName], $action->name);
             }
         }
+
         return $results;
     }
 
@@ -263,7 +284,8 @@ class AclManagerComponent extends Component {
      *
      * @return bool return true if acos saved
      */
-    private function __setAcos($ressources) {
+    private function __setAcos($ressources)
+    {
         $root = $this->checkNodeOrSave($this->_base, $this->_base, null);
         unset($ressources[0]);
         foreach ($ressources as $controllers) {
@@ -280,12 +302,14 @@ class AclManagerComponent extends Component {
                             $path[$i] = $path[$i] . $slash;
                             $path[$i] = $path[$i] . $tmp[$i - 1];
                             $this->checkNodeOrSave(
-                                    $path[$i], $tmp[$i - 1], $parent[$i]
+                                $path[$i],
+                                $tmp[$i - 1],
+                                $parent[$i]
                             );
                             $new = $this->Aco
                                     ->find()
                                     ->where(
-                                            [
+                                        [
                                                 'alias' => $tmp[$i - 1],
                                                 'parent_id' => $parent[$i]
                                             ]
@@ -297,7 +321,9 @@ class AclManagerComponent extends Component {
                     foreach ($actions as $action) {
                         if (!empty($action)) {
                             $this->checkNodeOrSave(
-                                    $controller . $action, $action, end($parent)
+                                $controller . $action,
+                                $action,
+                                end($parent)
                             );
                         }
                     }
@@ -305,18 +331,23 @@ class AclManagerComponent extends Component {
                     $controllerName = array_pop($tmp);
                     $path = $this->_base . '/' . $controller;
                     $controllerNode = $this->checkNodeOrSave(
-                            $path, $controllerName, $root->id
+                        $path,
+                        $controllerName,
+                        $root->id
                     );
                     foreach ($actions as $action) {
                         if (!empty($action)) {
                             $this->checkNodeOrSave(
-                                    $controller . '/' . $action, $action, $controllerNode['id']
+                                $controller . '/' . $action,
+                                $action,
+                                $controllerNode['id']
                             );
                         }
                     }
                 }
             }
         }
+
         return true;
     }
 
@@ -328,11 +359,10 @@ class AclManagerComponent extends Component {
      *
      * @return bool return true if acos saved
      */
-    private function __setPluginsAcos($ressources) {
+    private function __setPluginsAcos($ressources)
+    {
         foreach ($ressources as $controllers) {
-
             foreach ($controllers as $controller => $actions) {
-
                 $parent = [];
                 $path = [];
                 $tmp = [];
@@ -363,7 +393,9 @@ class AclManagerComponent extends Component {
                                 $tmp[$i - 1] = "Controller";
                             }
                             $new = $this->checkNodeOrSave(
-                                    $this->_base . '/' . $path[$i], $tmp[$i - 1], $parent[$i]
+                                $this->_base . '/' . $path[$i],
+                                $tmp[$i - 1],
+                                $parent[$i]
                             );
                             $parent[$i + 1] = $new->id;
                         }
@@ -373,7 +405,9 @@ class AclManagerComponent extends Component {
                     foreach ($actions as $action) {
                         if (!empty($action)) {
                             $this->checkNodeOrSave(
-                                    $controller . '/' . $action, $action, end($parent)
+                                $controller . '/' . $action,
+                                $action,
+                                end($parent)
                             );
                         }
                     }
@@ -381,12 +415,16 @@ class AclManagerComponent extends Component {
                     $controllerName = array_pop($tmp);
                     $path = $this->_base . '/' . $controller;
                     $controllerNode = $this->checkNodeOrSave(
-                            $path, $controllerName, $root->id
+                        $path,
+                        $controllerName,
+                        $root->id
                     );
                     foreach ($actions as $action) {
                         if (!empty($action)) {
                             $this->checkNodeOrSave(
-                                    $controller . '/' . $action, $action, $controllerNode['id']
+                                $controller . '/' . $action,
+                                $action,
+                                $controllerNode['id']
                             );
                         }
                     }
@@ -404,7 +442,8 @@ class AclManagerComponent extends Component {
      *
      * @return object
      */
-    public function checkNodeOrSave($path, $alias, $parentId = null) {
+    public function checkNodeOrSave($path, $alias, $parentId = null)
+    {
         $node = $this->Aco->node($path);
         if ($node === false) {
             $data = [
@@ -414,8 +453,10 @@ class AclManagerComponent extends Component {
             ];
             $entity = $this->Aco->newEntity($data);
             $node = $this->Aco->save($entity);
+
             return $node;
         }
+
         return $node->first();
     }
 
@@ -423,14 +464,15 @@ class AclManagerComponent extends Component {
      * Find aro and returns the number of matches
      *
      **/
-    private function __findAro($aro) {
+    private function __findAro($aro)
+    {
         $conditions = [
             'alias' => $aro->alias,
             'foreign_key' => $aro->foreign_key,
             'model' => $aro->model
         ];
 
-        if($aro->parent_id == NULL) {
+        if ($aro->parent_id == null) {
             $conditions[] = 'parent_id IS NULL';
         } else {
             $conditions['parent_id'] = $aro->parent_id;
@@ -441,5 +483,4 @@ class AclManagerComponent extends Component {
             'recursive' => -1
         ])->count();
     }
-
 }

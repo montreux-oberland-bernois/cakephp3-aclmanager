@@ -7,16 +7,7 @@
 namespace AclManager\Controller;
 
 use App\Controller\AppController as BaseController;
-use Cake\Event\Event;
 
-class AppController extends BaseController {
-
-    /**
-     * beforeFitler
-     */
-    public function beforeFilter(Event $event) {
-        parent::beforeFilter($event);
-        
-    }
-
+class AppController extends BaseController
+{
 }

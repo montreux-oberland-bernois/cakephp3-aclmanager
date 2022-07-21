@@ -13,9 +13,9 @@ $this->assign('icon', 'lock');
 $this->assign('title', 'Gestion des droits');
 $this->assign('description', 'Gérer les autorisations');
 
-echo $this->Html->css('AclManager.default',['inline' => false]);
-echo $this->Html->script('AclManager.acl/manage.js', array('block' => 'script'));
-echo $this->Html->script('Accounting.drilldown-table.js', ['block' =>'script']);
+echo $this->Html->css('AclManager.default', ['inline' => false]);
+echo $this->Html->script('AclManager.acl/manage.js', ['block' => 'script']);
+echo $this->Html->script('Accounting.drilldown-table.js', ['block' => 'script']);
 
 $btn_ico = [
         'allow' => '<i class="fa fa-check text-success"></i>',
@@ -37,7 +37,7 @@ $btn_ico = [
                     <thead>
                     <tr>
                         <th>Action</th>
-                        <?php foreach ($aros as $aro){ ?>
+                        <?php foreach ($aros as $aro) { ?>
                             <?php $aro = array_shift($aro); ?>
                             <th>
                                 <?php
@@ -64,63 +64,63 @@ $btn_ico = [
                         $alias = $aco['Aco']['alias'];
                         $ident = substr_count($action, '/');
                         $nextAction = next($acos)['Action'];
-                        $nextIdent = substr_count($nextAction, '/');;
+                        $nextIdent = substr_count($nextAction, '/');
+                        ;
                         if ($ident <= $lastIdent && !is_null($lastIdent)) {
                             for ($i = 0; $i <= ($lastIdent - $ident); $i++) {
                                 echo "</tr>";
                             }
                         }
                         if ($ident > 1) {
-                            echo "<tr class='active' style='display: none' data-parent='".$aco['Aco']['parent_id']."''>";
-                        }elseif ($ident != $lastIdent) {
+                            echo "<tr class='active' style='display: none' data-parent='" . $aco['Aco']['parent_id'] . "''>";
+                        } elseif ($ident != $lastIdent) {
                             echo "<tr class='aclmanager-ident-" . $ident . "'>";
                         }
 
                             echo "<td>";
-                            echo ($uglyIdent ? str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", $ident) : "") . ($ident == 1 || $nextIdent > $ident ? "<i data-trigger='expand'  data-id='".$aco['Aco']['id']."' class='fa fa-plus-square click'></i> <strong>" : "" ) . h($alias) . ($ident == 1 ? "</strong>" : "" );
+                            echo ($uglyIdent ? str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", $ident) : "") . ($ident == 1 || $nextIdent > $ident ? "<i data-trigger='expand'  data-id='" . $aco['Aco']['id'] . "' class='fa fa-plus-square click'></i> <strong>" : "" ) . h($alias) . ($ident == 1 ? "</strong>" : "" );
                             echo "</td>";
-                            foreach ($aros as $aro):
-                                $inherit = $this->AclManager->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}-inherit");
-                                $allowed = $this->AclManager->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}");
-                                $mAro = $model;
-                                $mAllowed = $this->AclManager->Acl->check($aro, $action);
-                                $mAllowedText = ($mAllowed) ? 'Allow' : 'Deny';
-                                // Originally based on 'allowed' above 'mAllowed'
-                                $icon = ($mAllowed) ? $this->Html->image('AclManager.allow_32.png') : $this->Html->image('AclManager.deny_32.png');
-                                if ($inherit) {
-                                    $icon = $this->Html->image('AclManager.inherit_32.png');
-                                    $btns = ['allow', 'deny'];
-                                }
-                                if ($mAllowed && !$inherit) {
-                                    $icon = $this->Html->image('AclManager.allow_32.png');
-                                    $mAllowedText = 'Allow';
-                                    $btns = ['deny', 'inherit'];
-                                }
-                                if ($mAllowed && $inherit) {
-                                    $icon = $this->Html->image('AclManager.allow_inherited_32.png');
-                                    $mAllowedText = 'Inherit';
-                                    $btns = ['deny'];
-                                }
-                                if (!$mAllowed && $inherit) {
-                                    $icon = $this->Html->image('AclManager.deny_inherited_32.png');
-                                    $mAllowedText = 'Inherit';
-                                    $btns = ['allow'];
-                                }
-                                if (!$mAllowed && !$inherit) {
-                                    $icon = $this->Html->image('AclManager.deny_32.png');
-                                    $mAllowedText = 'Deny';
-                                    $btns = ['allow', 'inherit'];
-                                }
-                                echo "<td class=\"select-perm\">";
-                                echo '<span data-toggle="tooltip" data-placement="top" title="" data-original-title="'.$mAllowedText.'">'. $icon . '</span> ' ;
-                                foreach ($btns as $btn) {
-                                    echo ' <a class="click-acl-'.$btn.' click" data-aco="'. str_replace("/", ":", $action) .'" data-aro="'.$aroAlias.':'.$aro[$aroAlias]['id'].'">'.$btn_ico[$btn].'</a>';
-                                }
-                              //  echo $this->Form->select("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}", array('inherit' => __('Inherit'), 'allow' => __('Allow'), 'deny' => __('Deny')), array('empty' => true, 'class' => 'form-control'));
-                                echo "</td>";
-                            endforeach;
+                        foreach ($aros as $aro) :
+                            $inherit = $this->AclManager->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}-inherit");
+                            $allowed = $this->AclManager->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}");
+                            $mAro = $model;
+                            $mAllowed = $this->AclManager->Acl->check($aro, $action);
+                            $mAllowedText = ($mAllowed) ? 'Allow' : 'Deny';
+                            // Originally based on 'allowed' above 'mAllowed'
+                            $icon = ($mAllowed) ? $this->Html->image('AclManager.allow_32.png') : $this->Html->image('AclManager.deny_32.png');
+                            if ($inherit) {
+                                $icon = $this->Html->image('AclManager.inherit_32.png');
+                                $btns = ['allow', 'deny'];
+                            }
+                            if ($mAllowed && !$inherit) {
+                                $icon = $this->Html->image('AclManager.allow_32.png');
+                                $mAllowedText = 'Allow';
+                                $btns = ['deny', 'inherit'];
+                            }
+                            if ($mAllowed && $inherit) {
+                                $icon = $this->Html->image('AclManager.allow_inherited_32.png');
+                                $mAllowedText = 'Inherit';
+                                $btns = ['deny'];
+                            }
+                            if (!$mAllowed && $inherit) {
+                                $icon = $this->Html->image('AclManager.deny_inherited_32.png');
+                                $mAllowedText = 'Inherit';
+                                $btns = ['allow'];
+                            }
+                            if (!$mAllowed && !$inherit) {
+                                $icon = $this->Html->image('AclManager.deny_32.png');
+                                $mAllowedText = 'Deny';
+                                $btns = ['allow', 'inherit'];
+                            }
+                            echo "<td class=\"select-perm\">";
+                            echo '<span data-toggle="tooltip" data-placement="top" title="" data-original-title="' . $mAllowedText . '">' . $icon . '</span> ';
+                            foreach ($btns as $btn) {
+                                echo ' <a class="click-acl-' . $btn . ' click" data-aco="' . str_replace("/", ":", $action) . '" data-aro="' . $aroAlias . ':' . $aro[$aroAlias]['id'] . '">' . $btn_ico[$btn] . '</a>';
+                            }
+                          //  echo $this->Form->select("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}", array('inherit' => __('Inherit'), 'allow' => __('Allow'), 'deny' => __('Deny')), array('empty' => true, 'class' => 'form-control'));
+                            echo "</td>";
+                        endforeach;
                             $lastIdent = $ident;
-
                     }
                     for ($i = 0; $i <= $lastIdent; $i++) {
                         echo "</tr>";
@@ -156,7 +156,7 @@ $btn_ico = [
                     <p><i class="fa fa-check text-success"></i> Autoriser | <i class="fa fa-remove text-danger"></i> Refuser | <i class="fa fa-level-down text-primary"></i> Hériter du parent</p>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><?php echo $this->Html->image('AclManager.deny_32.png' , ['width' => '16px']) . ' ' . __('Refusé') ?></p>
+                            <p><?php echo $this->Html->image('AclManager.deny_32.png', ['width' => '16px']) . ' ' . __('Refusé') ?></p>
                             <p><?php echo $this->Html->image('AclManager.deny_inherited_32.png', ['width' => '16px']) . ' ' . __('Refusé par héritage') ?></p>
                         </div>
                         <div class="col-md-6">
