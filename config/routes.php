@@ -20,7 +20,7 @@
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 
-Router::plugin(
+$routes->plugin(
     'AclManager',
     ['path' => '/AclManager'],
     function (RouteBuilder $routes) {
