@@ -2,18 +2,18 @@
 
 /**
  * CakePHP 3.x - Acl Manager
- * 
+ *
  * PHP version 5
- * 
+ *
  * Class AclHelper
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @category CakePHP3
- * 
+ *
  * @package  AclManager\View
- * 
+ *
  * @author Ivan Amat <dev@ivanamat.es>
  * @copyright Copyright 2016, Iván Amat
  * @license MIT http://opensource.org/licenses/MIT
@@ -31,8 +31,8 @@ use Cake\View\View;
  *
  * @link http://book.cakephp.org/3.0/en/views.html#the-app-view
  */
-class AppView extends View {
-
+class AppView extends View
+{
     /**
      * Initialization hook method.
      *
@@ -42,9 +42,9 @@ class AppView extends View {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize(): void
+    {
         $this->loadHelper('AclManager.AclManager');
         $this->loadHelper('Html');
     }
-
 }

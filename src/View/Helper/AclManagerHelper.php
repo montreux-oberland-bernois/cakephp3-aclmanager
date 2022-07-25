@@ -2,18 +2,18 @@
 
 /**
  * CakePHP 3.x - Acl Manager
- * 
+ *
  * PHP version 5
- * 
+ *
  * Class AclHelper
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @category CakePHP3
- * 
+ *
  * @package  AclManager\View\Helper
- * 
+ *
  * @author Ivan Amat <dev@ivanamat.es>
  * @copyright Copyright 2016, Iván Amat
  * @license MIT http://opensource.org/licenses/MIT
@@ -30,15 +30,15 @@ use Cake\ORM\TableRegistry;
 use Cake\View\Helper;
 use Cake\View\View;
 
-class AclManagerHelper extends Helper {
-    
+class AclManagerHelper extends Helper
+{
     /**
      * Helpers used.
      *
      * @var array
      */
     public $helpers = ['Html'];
-    
+
     /**
      * Acl Instance.
      *
@@ -47,7 +47,14 @@ class AclManagerHelper extends Helper {
     public $Acl;
     public $Auth;
 
-    public function __construct(View $View , $config = array()) {
+    /**
+     * AclManagerHelper constructor
+     *
+     * @param \Cake\View\View $View
+     * @param array $config
+     */
+    public function __construct(View $View, $config = [])
+    {
         parent::__construct($View, $config);
 
         $collection = new ComponentRegistry();
@@ -58,12 +65,13 @@ class AclManagerHelper extends Helper {
      *  Check if the ARO has access to the aco
      *  Set as private as knowing the ARO is almost useless
      *
-     * @param int $aro The Aro of the object you want to check
-     * @param string $aco The path of the Aco like App/Blog/add
+     * @param Model|array|string $aro The Aro of the object you want to check
+     * @param Model|array|string $aco The path of the Aco like App/Blog/add
      * @param string $action CRUD Actions to check
      * @return bool
      */
-    private function _check($aro, $aco, $action = '*') {
+    private function _check($aro, $aco, $action = '*')
+    {
         if (empty($aro) || empty($aco)) {
             return false;
         }
@@ -79,10 +87,11 @@ class AclManagerHelper extends Helper {
      * @param string $action CRUD Actions to check
      * @return bool
      */
-    public function checkUser($aco, $uid = null, $action = '*') {
-        $uid = $this->request->session()->read('Auth.User.id');
+    public function checkUser($aco, $uid = null, $action = '*')
+    {
+        $uid = $this->getView()->getRequest()->getSession()->read('Auth.User.id');
 
-        if(empty($uid)) {
+        if (empty($uid)) {
             return false;
         }
 
@@ -97,12 +106,13 @@ class AclManagerHelper extends Helper {
      * @param string $action CRUD Actions to check
      * @return bool
      */
-    public function checkGroup($aco, $gid = null, $action = '*') {
-        if(empty($gid)) {
+    public function checkGroup($aco, $gid = null, $action = '*')
+    {
+        if (empty($gid)) {
             return false;
         }
-        
-        $gid = $this->request->session()->read('Auth.User.group_id');
+
+        $gid = $this->getView()->getRequest()->getSession()->read('Auth.User.group_id');
 
         return $this->_check(['model' => 'Groups', 'foreign_key' => $gid], $aco, $action);
     }
@@ -112,32 +122,42 @@ class AclManagerHelper extends Helper {
      * @param int $id
      * @return \Cake\Datasource\EntityInterface|mixed
      */
-    public function getName($aro, $id) {
+    public function getName($aro, $id)
+    {
         return $this->__getName($aro, $id);
     }
 
     /**
      * Return value from permissions input
-     * 
-     * @param string $value
-     * @return boolean
+     *
+     * @param string|null $value
+     *
+     * @return bool
      */
-    public function value($value = NULL) {
-        if($value == NULL) {
+    public function value(string $value = null)
+    {
+        if ($value == null) {
             return false;
         }
-        
-        $o = explode('.',$value);
-        $data = $this->request->data;
+
+        $o = explode('.', $value);
+        $data = $this->getView()->getRequest()->getData();
+
         return $data[$o[0]][$o[1]][$o[2]];
     }
 
-    protected function __getName($aro, $id) {
-        $model = TableRegistry::get($aro);
-        $data = $model->get($id, array(
-            'recursive' => -1
-        ));
+    /**
+     * Find ARO/ACO id
+     *
+     * @param string $aro
+     * @param int $id
+     *
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function __getName($aro, $id)
+    {
+        $model = TableRegistry::getTableLocator()->get($aro);
 
-        return $data;
+        return $model->get($id, ['recursive' => -1]);
     }
 }
